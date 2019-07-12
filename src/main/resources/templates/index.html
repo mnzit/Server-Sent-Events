@@ -1,0 +1,40 @@
+
+<html>
+    <head></head>
+    <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <div id="questions">
+
+        </div>
+        <form id="newQuestionForm" action="/new-question" method="POST">
+            <input type="text" name="question">
+            <button id ="sendQuestionButton" type="submit">Submit</button>
+        </form>
+
+        <script>
+
+            var ws;
+            var stompClient;
+            var questions = document.getElementById('questions');
+            var source = new EventSource('/questions');
+
+            $(document).ready(function () {
+                source.addEventListener('spring', function (event) {
+                    var p = document.createElement('p');
+                    p.innerHTML = '<p>' + event.data + '</p>';
+                    questions.appendChild(p);
+                });
+
+                $('#newQuestionForm').on("submit", function (e) {
+                    e.preventDefault();
+                    sendForm();
+                });
+
+                function sendForm() {
+                    $.post('/new-question', $('#newQuestionForm').serialize());
+                }
+            });
+
+        </script>
+    </body>
+</html>
